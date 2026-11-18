@@ -9,7 +9,7 @@ from crud.chamados_crud import (
     listar_chamados,
 )
 from schemas import ChamadoAtualizar, ChamadoCriar, ChamadoOut, StatusChamado, StatusIn
-from security import UsuarioLogado, eh_atendente
+from security import Atendente, UsuarioLogado, eh_atendente
 
 router = APIRouter(prefix="/chamados", tags=["Chamados"])
 
@@ -43,7 +43,7 @@ def buscar(chamado_id: int, usuario: UsuarioLogado):
 
 
 @router.patch("/{chamado_id}", response_model=ChamadoOut)
-def atualizar(chamado_id: int, dados: ChamadoAtualizar, usuario: UsuarioLogado):
+def atualizar(chamado_id: int, dados: ChamadoAtualizar, usuario: Atendente):
     carregar_chamado(chamado_id, usuario)
     campos = dados.model_dump(exclude_unset=True, exclude_none=True)
     if not campos:
@@ -54,16 +54,16 @@ def atualizar(chamado_id: int, dados: ChamadoAtualizar, usuario: UsuarioLogado):
 
 
 @router.patch("/{chamado_id}/status", response_model=ChamadoOut)
-def alterar_status(chamado_id: int, dados: StatusIn, usuario: UsuarioLogado):
-    if not eh_atendente(usuario):
-        raise HTTPException(status_code=403, detail="Apenas atendentes alteram o status.")
+def alterar_status(chamado_id: int, dados: StatusIn, usuario: Atendente):
+    # if not eh_atendente(usuario):
+    #     raise HTTPException(status_code=403, detail="Apenas atendentes alteram o status.")
     carregar_chamado(chamado_id, usuario)
     alterar_status_chamado(chamado_id, dados.status)
     return buscar_chamado(chamado_id)
 
 
 @router.post("/{chamado_id}/cancelar", response_model=ChamadoOut)
-def cancelar(chamado_id: int, usuario: UsuarioLogado):
+def cancelar(chamado_id: int, usuario: Atendente):
     carregar_chamado(chamado_id, usuario)
     if not cancelar_chamado(chamado_id):
         raise HTTPException(status_code=409, detail="Chamados concluídos ou já cancelados não podem ser cancelados.")

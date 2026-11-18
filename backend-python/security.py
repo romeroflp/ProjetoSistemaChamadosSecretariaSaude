@@ -52,3 +52,10 @@ def exigir_admin(usuario: UsuarioLogado) -> dict:
 
 
 Admin = Annotated[dict, Depends(exigir_admin)]
+
+def exigir_atendente(usuario: UsuarioLogado) -> dict:
+    if not eh_atendente(usuario):
+        raise HTTPException(403, "Apenas administradores e técnicos podem realizar essa operação.")
+    return usuario
+
+Atendente = Annotated[dict, Depends(exigir_atendente)]
