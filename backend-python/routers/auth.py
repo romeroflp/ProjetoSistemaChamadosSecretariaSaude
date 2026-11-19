@@ -25,9 +25,9 @@ def me(usuario: UsuarioLogado):
     return MeOut(**usuario, menus=permissoes["menus"], submenus=permissoes["submenus"])
 
 
-@router.post("/alterar-senha")
-def trocar_senha(dados: AlterarSenha, usuario: UsuarioLogado):
-    ok, mensagem = alterar_senha_usuario(usuario["id"], dados.senha_atual, dados.nova_senha)
-    if not ok:
-        raise HTTPException(status_code=400, detail=mensagem)
-    return {"mensagem": mensagem}
+# @router.post("/alterar-senha")
+# def trocar_senha(dados: AlterarSenha, usuario: UsuarioLogado):
+#     ok, mensagem = alterar_senha_usuario(usuario["id"], dados.senha_atual, dados.nova_senha)
+#     if not ok:
+#         raise HTTPException(status_code=400, detail=mensagem)
+#     return {"mensagem": mensagem}
